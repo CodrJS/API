@@ -11,7 +11,7 @@ initialize({
   api: {
     doc: apiDoc,
     routes: path.join(__dirname, "routes"),
-    expose: true,
+    expose: false,
   },
   ui: {
     enable: true,

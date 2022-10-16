@@ -17,10 +17,10 @@ app.use(bodyParser.json());
 app.use(morgan("short"));
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Express + TypeScript Server");
+  res.send(`Express + TypeScript Server.<br/><br/>Navigate to <a href="/v1/docs">/v1/docs</a> to view the documentation.`);
 });
 
-app.use("/api", v1);
+app.use("/v1", v1);
 
 app.use(((err, req, res, next) => {
   // if headers are already sent, let express handler the error
@@ -29,7 +29,7 @@ app.use(((err, req, res, next) => {
   }
 
   // if the path is for the API, have it handle the error
-  if (req.path.startsWith("/api")) {
+  if (req.path.startsWith("/v1")) {
     return v1.get("errorHandler")(err, req, res, next);
   }
 
@@ -39,11 +39,13 @@ app.use(((err, req, res, next) => {
 
 app.use((req, res, next) => {
   // catch 404 errors?
+  const err = new Error({ status: 404, message: `not found: ${req.path}` });
 
   // if the path is for API v1, have v1 handler the error
-  if (req.path.startsWith("/api")) {
-    const err = new Error({ status: 404, message: `not found: ${req.path}` });
+  if (req.path.startsWith("/v1")) {
     return v1.get("errorHandler")(err, req, res, next);
+  } else {
+    return res.json(err);
   }
 });
 
