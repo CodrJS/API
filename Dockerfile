@@ -5,8 +5,8 @@ RUN apk add --no-cache libc6-compat
 # set work directory
 WORKDIR /usr/src
 # copy over package.json and yarn.lock files
-COPY package.json yarn.lock .npmrc ./
-RUN yarn install --frozen-lockfile
+COPY package.json yarn.lock ./
+RUN yarn --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM node:16-alpine AS builder
