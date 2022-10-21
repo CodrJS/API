@@ -9,7 +9,7 @@
     "test": "jest --config jest.config.json --passWithNoTests --coverage",
     "build": "yarn clean && swc src -Dd dist",
     "clean": "rm -rf ./dist",
-    "start": "yarn build && NODE_ENV=production node dist/app.js",
+    "start": "NODE_ENV=production node dist/app.js",
     "format": "prettier --write \"src/**/*.(ts|js)\"",
     "lint": "eslint -c .eslintrc.json --ignore-path .eslintignore --ext .ts src",
     "preversion": "yarn lint",
