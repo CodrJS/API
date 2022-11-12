@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.use(morgan("short"));
 
 app.get("/", (req: Request, res: Response) => {
-  res.send(`Express + TypeScript Server.<br/><br/>Navigate to <a href="/v1/docs">/v1/docs</a> to view the documentation.`);
+  res.send(`Express + TypeScript Server.<br/><br/>Navigate to <a href="/v1/docs">/api/v1/docs</a> to view the documentation.`);
 });
 
 /**

@@ -21,7 +21,7 @@ WORKDIR /usr/src
 
 ENV NODE_ENV production
 
-COPY --from=builder /usr/src/.env ./.env
+# COPY --from=builder /usr/src/.env ./.env
 COPY --from=builder /usr/src/dist ./dist
 COPY --from=builder /usr/src/node_modules ./node_modules
 COPY --from=builder /usr/src/package.json ./package.json
