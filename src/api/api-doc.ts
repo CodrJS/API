@@ -13,15 +13,22 @@ import {
 } from "@dylanbulmer/openapi/classes/responses";
 import { ErrorSchema, GenericSchema } from "./components/schemas";
 import { BearerSchema } from "./components/securitySchemas";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+console.log(process.env.PROD_URL)
 
 const settings: OpenAPIV3_1.Document = {
   openapi: "3.1.0",
-
-  // The servers property breaks all apis for some reason
   servers: [
     {
-      url: `http://localhost:8000/v1/`,
+      url: `http://localhost:8000/api/v1/`,
       description: "Dev Server",
+    },
+    {
+      url: process.env.PROD_URL as string,
+      description: "Prod Server",
     },
   ],
 

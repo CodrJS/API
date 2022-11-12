@@ -4,13 +4,13 @@ import morgan from "morgan";
 import cors from "cors";
 import dotenv from "dotenv";
 
+dotenv.config();
+
 import v1 from "./api";
 import { Error } from "./class/Error";
 
-dotenv.config();
-
 const app: Express = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -20,8 +20,10 @@ app.get("/", (req: Request, res: Response) => {
   res.send(`Express + TypeScript Server.<br/><br/>Navigate to <a href="/v1/docs">/v1/docs</a> to view the documentation.`);
 });
 
-app.use("/v1", v1);
-
+/**
+ * Initialize 'v1' api and 'v1' api error handler.
+ */
+app.use("/api/v1", v1);
 app.use(((err, req, res, next) => {
   // if headers are already sent, let express handler the error
   if (res.headersSent) {
@@ -29,7 +31,7 @@ app.use(((err, req, res, next) => {
   }
 
   // if the path is for the API, have it handle the error
-  if (req.path.startsWith("/v1")) {
+  if (req.path.startsWith("/api/v1")) {
     return v1.get("errorHandler")(err, req, res, next);
   }
 
@@ -37,12 +39,15 @@ app.use(((err, req, res, next) => {
   return next(err);
 }) as express.ErrorRequestHandler);
 
+/**
+ * Error not handled? Send a 404.
+ */
 app.use((req, res, next) => {
   // catch 404 errors?
-  const err = new Error({ status: 404, message: `not found: ${req.path}` });
+  const err = new Error({ status: 404, message: `Not found: ${req.path}` });
 
   // if the path is for API v1, have v1 handler the error
-  if (req.path.startsWith("/v1")) {
+  if (req.path.startsWith("/api/v1")) {
     return v1.get("errorHandler")(err, req, res, next);
   } else {
     return res.json(err);
