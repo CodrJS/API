@@ -1,12 +1,21 @@
+import Response from "@codrjs/core/classes/Response";
 import { Operation } from "@dylanbulmer/openapi/types/Route";
-import passport from "../../../../utils/passport";
+import codr from "../../../../class/codr";
 
 export const POST: Operation =
   /* business middleware not expressible by OpenAPI documentation goes here */
   [
-    passport.authenticate("magiclink", { action: "requestToken" }),
-    function (req, res, next) {
-      res.status(200).json({ detail: { message: "Check your email." } });
+    // passport.authenticate("magiclink", { action: "requestToken" }),
+    async function (req, res, next) {
+      try {
+        const result: Response<{ token: string } | undefined> =
+          await codr.auth.signinWithEmail(
+            codr.auth.generateCode({ email: req.body.email }),
+          );
+        res.status(200).json({ detail: { message: result.message } });
+      } catch (e: any) {
+        res.status(e?.status || 500).json({ detail: { message: e?.message } });
+      }
     },
   ];
 
@@ -18,17 +27,11 @@ POST.apiDoc = {
     content: {
       "application/json": {
         schema: {
-          required: ["user"],
+          required: ["email"],
           properties: {
-            user: {
-              type: "object",
-              required: ["email"],
-              properties: {
-                email: {
-                  type: "string",
-                  examples: ["john.doe@example.com"],
-                },
-              },
+            email: {
+              type: "string",
+              examples: ["john.doe@example.com"],
             },
           },
         },

@@ -1,4 +1,4 @@
-import { Error } from "../../class/Error";
+import Error from "@codrjs/core/classes/Error";
 import { Operation } from "@dylanbulmer/openapi/types/Route";
 
 export const GET: Operation =

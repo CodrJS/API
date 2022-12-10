@@ -1,8 +1,8 @@
 import express from "express";
 import path from "path";
+import Error from "@codrjs/core/classes/Error";
 import { initialize } from "@dylanbulmer/openapi";
 import apiDoc from "./api-doc";
-import { Error } from "../class/Error";
 
 const app = express();
 
