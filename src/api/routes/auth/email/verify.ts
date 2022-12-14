@@ -1,13 +1,11 @@
 import { Response } from "@codrjs/core";
 import Route from "@dylanbulmer/openapi/types/Route";
-import session from "../../../../utils/session";
 import codr from "../../../../class/codr";
 import { JWT } from "@codrjs/core";
 
 export const GET: Route.Operation =
   /* business middleware not expressible by OpenAPI documentation goes here */
   [
-    session,
     async function (req, res, next) {
       const { token: accessToken } = req.query;
       try {

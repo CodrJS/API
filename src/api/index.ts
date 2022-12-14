@@ -3,8 +3,10 @@ import path from "path";
 import { Error } from "@codrjs/core";
 import { initialize } from "@dylanbulmer/openapi";
 import apiDoc from "./api-doc";
+import session from "../utils/session";
 
 const app = express();
+app.use(session);
 
 initialize({
   app,

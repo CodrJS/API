@@ -3,12 +3,10 @@ import { UserToken } from "@codrjs/core/types/classes/JWT";
 import { IUser } from "@codrjs/core/types/models/User";
 import Route from "@dylanbulmer/openapi/types/Route";
 import Codr from "../../../class/codr";
-import session from "../../../utils/session";
 
-export const POST: Route.Operation =
+export const PATCH: Route.Operation =
   /* business middleware not expressible by OpenAPI documentation goes here */
   [
-    session,
     async function (req, res, next) {
       const user = req.session.user;
       if (user === undefined) {
@@ -56,7 +54,7 @@ export const POST: Route.Operation =
   ];
 
 // 3.0 specification
-POST.apiDoc = {
+PATCH.apiDoc = {
   description: "Update user",
   tags: ["Self Management"],
   requestBody: {

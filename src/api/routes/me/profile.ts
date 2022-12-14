@@ -1,12 +1,37 @@
 import Route from "@dylanbulmer/openapi/types/Route";
 import Codr from "../../../class/codr";
-import session from "../../../utils/session";
 import { Response } from "@codrjs/core";
 
-export const POST: Route.Operation =
+export const GET: Route.Operation = [
+  async (req, res, next) => {
+    const user = req.session.user;
+    if (user === undefined) {
+      return res.status(401).json(
+        new Response({
+          message: "Access is unauthorized.",
+        }).toJSON(),
+      );
+    }
+
+    const profile = await Codr.db
+      .Profile(user)
+      .findOne({ userId: user._id })
+      .populate("userId", "name email");
+
+    console.log(profile);
+
+    res.status(200).json(
+      new Response({
+        message: "",
+        details: profile,
+      }).toJSON(),
+    );
+  },
+];
+
+export const PATCH: Route.Operation =
   /* business middleware not expressible by OpenAPI documentation goes here */
   [
-    session,
     async function (req, res, next) {
       const user = req.session.user;
       if (user === undefined) {
@@ -42,7 +67,7 @@ export const POST: Route.Operation =
   ];
 
 // 3.0 specification
-POST.apiDoc = {
+PATCH.apiDoc = {
   description: "Update user profile",
   tags: ["Self Management"],
   requestBody: {
