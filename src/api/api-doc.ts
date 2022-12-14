@@ -17,18 +17,12 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-console.log(process.env.PROD_URL)
-
 const settings: OpenAPIV3_1.Document = {
   openapi: "3.1.0",
   servers: [
     {
-      url: `http://localhost:8000/api/v1/`,
-      description: "Dev Server",
-    },
-    {
-      url: process.env.PROD_URL as string,
-      description: "Prod Server",
+      url: `${process.env.HOST}${process.env.API_PATH}`,
+      description: "API Server",
     },
   ],
 

@@ -1,14 +1,19 @@
 import Route from "@dylanbulmer/openapi/types/Route";
-import passport from "../../../../utils/passport";
+import session from "../../../utils/session";
 
 export const GET: Route.Operation =
   /* business middleware not expressible by OpenAPI documentation goes here */
-  [passport.authenticate("github", { scope: ["user:email"] })];
+  [
+    session,
+    async function (req, res, next) {
+      await req.session.destroy();
+      res.redirect("/");
+    },
+  ];
 
 // 3.0 specification
 GET.apiDoc = {
-  description:
-    "Log into the server via GitHub. **This API call cannot be tested via the documentation.** It returns a redirect to https://github.com/ for authentication.",
+  description: "Logout of an account",
   tags: ["Authentication"],
   responses: {
     "200": {

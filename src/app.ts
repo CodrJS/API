@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import v1 from "./api";
-import Error from "@codrjs/core/classes/Error";
+import { Error } from "@codrjs/core";
 
 const app: Express = express();
 const port = process.env.PORT || 8000;

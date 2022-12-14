@@ -1,19 +1,31 @@
-import Email from "@codrjs/core/classes/Email";
-import Response from "@codrjs/core/classes/Response";
-import { Operation } from "@dylanbulmer/openapi/types/Route";
+import { Response } from "@codrjs/core";
+import Route from "@dylanbulmer/openapi/types/Route";
+import session from "../../../../utils/session";
 import codr from "../../../../class/codr";
+import { JWT } from "@codrjs/core";
 
-export const GET: Operation =
+export const GET: Route.Operation =
   /* business middleware not expressible by OpenAPI documentation goes here */
   [
+    session,
     async function (req, res, next) {
       const { token: accessToken } = req.query;
       try {
         const result: Response<{ token: string } | undefined> =
           await codr.auth.signinWithEmail(accessToken as string);
-        res.status(200).json(result);
+
+        console.log(result);
+        // save the token
+        const token = result.details?.token as string;
+        req.session.jwt = token;
+        req.session.user = JWT.verifyToken(token) as JWT.UserToken;
+
+        await req.session.save();
+
+        // send home
+        res.redirect("/");
       } catch (e: any) {
-        res.status(e?.status || 500).json({ detail: { message: e?.message } });
+        res.status(e?.status || 500).json({ detail: { message: e } });
       }
     },
   ];
@@ -22,6 +34,16 @@ export const GET: Operation =
 GET.apiDoc = {
   description: "Verify the authentication link.",
   tags: ["Authentication"],
+  parameters: [
+    {
+      in: "query",
+      name: "token",
+      schema: {
+        type: "string",
+      },
+      description: "The access token sent to the email.",
+    },
+  ],
   responses: {
     "200": {
       $ref: "#/components/responses/200",

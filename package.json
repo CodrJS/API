@@ -4,6 +4,7 @@
   "author": "Dylan Bulmer <dylan@dylanbulmer.com>",
   "repository": "git@github.com:CodrJS/API.git",
   "license": "MIT",
+  "type": "commonjs",
   "main": "dist/app.js",
   "scripts": {
     "test": "jest --config jest.config.json --passWithNoTests --coverage",
@@ -20,11 +21,12 @@
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.216.0",
-    "@codrjs/core": "^1.0.4-patch1",
+    "@codrjs/core": "^1.0.8",
     "@dylanbulmer/openapi": "^1.0.7",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "iron-session": "^6.3.1",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "nodemailer": "^6.8.0",

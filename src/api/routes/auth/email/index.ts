@@ -1,8 +1,9 @@
-import Response from "@codrjs/core/classes/Response";
-import { Operation } from "@dylanbulmer/openapi/types/Route";
+import { Response } from "@codrjs/core";
+import { Utils } from "@codrjs/core";
+import Route from "@dylanbulmer/openapi/types/Route";
 import codr from "../../../../class/codr";
 
-export const POST: Operation =
+export const POST: Route.Operation =
   /* business middleware not expressible by OpenAPI documentation goes here */
   [
     // passport.authenticate("magiclink", { action: "requestToken" }),
@@ -10,7 +11,9 @@ export const POST: Operation =
       try {
         const result: Response<{ token: string } | undefined> =
           await codr.auth.signinWithEmail(
-            codr.auth.generateCode({ email: req.body.email }),
+            Utils.AccessToken.encrypt(
+              JSON.stringify({ email: req.body.email }),
+            ),
           );
         res.status(200).json({ detail: { message: result.message } });
       } catch (e: any) {

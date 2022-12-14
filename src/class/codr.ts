@@ -1,7 +1,6 @@
 // initialize Codr
 
-import { App } from "@codrjs/core";
-import Authentication from "@codrjs/core/services/auth";
+import { App, Database, Authentication } from "@codrjs/core";
 
 const app = new App({
   databaseUri: process.env.MONGODB_URI as string,
@@ -14,9 +13,15 @@ const app = new App({
   },
 });
 
-const auth = new Authentication(app);
+app.connect();
 
-export default {
+const auth = new Authentication(app);
+const db = new Database(app);
+
+const Codr = {
   app,
+  db,
   auth,
 };
+
+export default Codr;

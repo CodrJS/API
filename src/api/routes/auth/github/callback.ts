@@ -1,8 +1,7 @@
-import { R200 } from "@dylanbulmer/openapi/classes/responses";
-import { Operation } from "@dylanbulmer/openapi/types/Route";
+import Route from "@dylanbulmer/openapi/types/Route";
 import passport from "../../../../utils/passport";
 
-export const GET: Operation =
+export const GET: Route.Operation =
   /* business middleware not expressible by OpenAPI documentation goes here */
   [
     passport.authenticate("github", { failureRedirect: "/login" }),

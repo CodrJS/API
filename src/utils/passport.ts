@@ -6,7 +6,7 @@ passport.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID as string,
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-      callbackURL: `${process.env.DOMAIN}/auth/github/callback`,
+      callbackURL: `${process.env.HOST}${process.env.API_PATH}/auth/github/callback`,
     },
     function verify(
       accessToken: string,
