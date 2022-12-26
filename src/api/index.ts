@@ -1,10 +1,15 @@
 import express from "express";
 import path from "path";
+import { Error } from "@codrjs/core";
 import { initialize } from "@dylanbulmer/openapi";
 import apiDoc from "./api-doc";
-import { Error } from "../class/Error";
+import session from "../utils/session";
+// import passport from "../utils/passport";
 
 const app = express();
+app.use(session);
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 initialize({
   app,

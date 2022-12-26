@@ -1,7 +1,7 @@
-import { Error } from "../../class/Error";
-import { Operation } from "@dylanbulmer/openapi/types/Route";
+import { Error } from "@codrjs/core";
+import Route from "@dylanbulmer/openapi/types/Route";
 
-export const GET: Operation =
+export const GET: Route.Operation =
   /* business middleware not expressible by OpenAPI documentation goes here */
   (req, res, next) => {
     const bearer = req.headers.authorization;

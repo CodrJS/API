@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import v1 from "./api";
-import { Error } from "./class/Error";
+import { Error } from "@codrjs/core";
 
 const app: Express = express();
 const port = process.env.PORT || 8000;
@@ -17,7 +17,9 @@ app.use(bodyParser.json());
 app.use(morgan("short"));
 
 app.get("/", (req: Request, res: Response) => {
-  res.send(`Express + TypeScript Server.<br/><br/>Navigate to <a href="/v1/docs">/api/v1/docs</a> to view the documentation.`);
+  res.send(
+    `Express + TypeScript Server.<br/><br/>Navigate to <a href="/api/v1/docs">/api/v1/docs</a> to view the documentation.`,
+  );
 });
 
 /**
