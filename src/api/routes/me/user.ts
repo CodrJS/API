@@ -4,54 +4,54 @@ import { IUser } from "@codrjs/core/types/models/User";
 import Route from "@dylanbulmer/openapi/types/Route";
 import Codr from "../../../class/codr";
 
-export const PATCH: Route.Operation =
-  /* business middleware not expressible by OpenAPI documentation goes here */
-  [
-    async function (req, res, next) {
-      const user = req.session.user;
-      if (user === undefined) {
-        return res.status(401).json(
-          new Response({
-            message: "Access is unauthorized.",
-          }).toJSON(),
-        );
-      }
+export const PATCH: Route.Operation = async function (req, res, next) {
+  const user = req.session.user;
+  if (user === undefined) {
+    return res.status(401).json(
+      new Response({
+        message: "Access is unauthorized.",
+      }).toJSON(),
+    );
+  }
 
-      const userData = await Codr.db.User(user).findOne({ email: user.email });
+  const body = req.body;
+  if (body.role) {
+    // a user may not change their own role.
+    delete body.role;
+  }
 
-      if (userData) {
-        const update = await userData.updateOne({ ...req.body });
+  const userData = await Codr.db.User(user).findOne({ email: user.email });
 
-        // update JWT automatically here
-        if (update.modifiedCount) {
-          const { jwt, user } = Codr.auth.updateJWT(<string>req.session.jwt, {
-            ...userData.toJSON(),
-            ...req.body,
-          } as IUser);
+  if (userData) {
+    const update = await userData.updateOne({ ...req.body });
 
-          req.session.jwt = jwt;
-          req.session.user = user as UserToken;
+    // update JWT automatically here
+    if (update.modifiedCount) {
+      const { jwt, user } = Codr.auth.updateJWT(<string>req.session.jwt, {
+        ...userData.toObject(),
+        ...req.body,
+      } as IUser);
 
-          await req.session.save();
-        }
+      req.session.jwt = jwt;
+      req.session.user = user as UserToken;
 
-        res.status(update.modifiedCount ? 200 : 500).json(
-          new Response({
-            message: update.modifiedCount
-              ? "User updated"
-              : "An error occurred while updating your user.",
-            details: update,
-          }).toJSON(),
-        );
-      } else {
-        res
-          .status(400)
-          .json(
-            new Error({ status: 400, message: "User could not be found." }),
-          );
-      }
-    },
-  ];
+      await req.session.save();
+    }
+
+    res.status(update.modifiedCount ? 200 : 500).json(
+      new Response({
+        message: update.modifiedCount
+          ? "User updated"
+          : "An error occurred while updating your user.",
+        details: update,
+      }).toJSON(),
+    );
+  } else {
+    res
+      .status(400)
+      .json(new Error({ status: 400, message: "User could not be found." }));
+  }
+};
 
 // 3.0 specification
 PATCH.apiDoc = {

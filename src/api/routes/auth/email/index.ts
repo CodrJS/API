@@ -1,26 +1,18 @@
-import { Response } from "@codrjs/core";
 import { Utils } from "@codrjs/core";
 import Route from "@dylanbulmer/openapi/types/Route";
 import codr from "../../../../class/codr";
 
-export const POST: Route.Operation =
-  /* business middleware not expressible by OpenAPI documentation goes here */
-  [
-    // passport.authenticate("magiclink", { action: "requestToken" }),
-    async function (req, res, next) {
-      try {
-        const result: Response<{ token: string } | undefined> =
-          await codr.auth.signinWithEmail(
-            Utils.AccessToken.encrypt(
-              JSON.stringify({ email: req.body.email }),
-            ),
-          );
-        res.status(200).json({ detail: { message: result.message } });
-      } catch (e: any) {
-        res.status(e?.status || 500).json({ detail: { message: e?.message } });
-      }
-    },
-  ];
+export const POST: Route.Operation = async function (req, res, next) {
+  try {
+    const result =
+      await codr.auth.signinWithEmail(
+        Utils.AccessToken.encrypt(JSON.stringify({ email: req.body.email })),
+      );
+    res.status(200).json({ detail: { message: result.message } });
+  } catch (e: any) {
+    res.status(e?.status || 500).json({ detail: { message: e?.message } });
+  }
+};
 
 // 3.0 specification
 POST.apiDoc = {

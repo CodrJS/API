@@ -1,32 +1,30 @@
-import { Response } from "@codrjs/core";
 import Route from "@dylanbulmer/openapi/types/Route";
 import codr from "../../../../class/codr";
 import { JWT } from "@codrjs/core";
+import { IUser } from "@codrjs/core/types/models/User";
 
-export const GET: Route.Operation =
-  /* business middleware not expressible by OpenAPI documentation goes here */
-  [
-    async function (req, res, next) {
-      const { token: accessToken } = req.query;
-      try {
-        const result: Response<{ token: string } | undefined> =
-          await codr.auth.signinWithEmail(accessToken as string);
+export const GET: Route.Operation = async function (req, res, next) {
+  const { token: accessToken } = req.query;
+  try {
+    const result = await codr.auth.signinWithEmail(accessToken as string);
 
-        console.log(result);
-        // save the token
-        const token = result.details?.token as string;
-        req.session.jwt = token;
-        req.session.user = JWT.verifyToken(token) as JWT.UserToken;
+    console.log(result);
+    // save the token
+    const user = result.details?.user as IUser;
 
-        await req.session.save();
+    const token = JWT.generateToken(user);
 
-        // send home
-        res.redirect("/");
-      } catch (e: any) {
-        res.status(e?.status || 500).json({ detail: { message: e } });
-      }
-    },
-  ];
+    req.session.jwt = token;
+    req.session.user = user;
+
+    await req.session.save();
+
+    // send home
+    res.redirect("/");
+  } catch (e: any) {
+    res.status(e?.status || 500).json({ detail: { message: e } });
+  }
+};
 
 // 3.0 specification
 GET.apiDoc = {
